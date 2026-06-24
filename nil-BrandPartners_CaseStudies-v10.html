@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIL In Action — Brand Partner Video Grid</title>
+<link href="https://fonts.googleapis.com/css2?family=Tourney:wght@600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ── Brand tokens ── */
+:root {
+  --midnight:   #000000;
+  --gold:       #D0B787;
+  --light-gold: #FAEFB9;
+  --dark-gold:  #A58338;
+  --grad:       linear-gradient(45deg,#A58338 0%,#D0B787 55%,#FAEFB9 100%);
+  --s1: #0d0d0d;
+  --s2: #141414;
+  --s3: #1a1a1a;
+  --rule:      rgba(255,255,255,0.07);
+  --rule-md:   rgba(255,255,255,0.13);
+  --rule-gold: rgba(208,183,135,0.2);
+  --tx1: #FFFFFF;
+  --tx2: rgba(255,255,255,0.52);
+  --tx3: rgba(255,255,255,0.28);
+  --gold-dim:  rgba(208,183,135,0.09);
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  background: var(--midnight);
+  color: var(--tx1);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+}
+
+/* ── 3-col video grid ── */
+.nil-video-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 1px;
+  background: var(--rule);
+  border: .5px solid var(--rule);
+}
+
+/* ── Card ── */
+.nil-vc {
+  background: var(--midnight);
+  cursor: pointer;
+  transition: background .2s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.nil-vc:hover { background: var(--s2); }
+
+/* ── Thumb ── */
+.nil-vc-thumb {
+  aspect-ratio: 16/9;
+  position: relative;
+  overflow: hidden;
+}
+.nil-vc-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .42s ease;
+}
+.nil-vc:hover .nil-vc-bg { transform: scale(1.05); }
+
+.nil-vc-thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(255,255,255,.011) 28px,rgba(255,255,255,.011) 28.5px),
+    repeating-linear-gradient(90deg,transparent,transparent 28px,rgba(255,255,255,.011) 28px,rgba(255,255,255,.011) 28.5px);
+}
+
+.nil-vc-ovl {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.72);
+  z-index: 2;
+  transition: background .4s ease;
+}
+.nil-vc:hover .nil-vc-ovl { background: rgba(0,0,0,.1); }
+
+.nil-vc-play {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.nil-vc:hover .nil-vc-play { opacity: 1; }
+
+.t-play-ring {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(208,183,135,.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(208,183,135,.07);
+}
+.t-play-tri {
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 13px solid var(--gold);
+  margin-left: 3px;
+}
+
+.nil-vc-badge {
+  position: absolute;
+  top: 10px; left: 10px;
+  z-index: 4;
+  font-size: 9.9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 1px;
+  background: var(--gold-dim);
+  color: var(--gold);
+  border: .5px solid var(--rule-gold);
+}
+.nil-vc-dur {
+  position: absolute;
+  bottom: 9px; right: 10px;
+  z-index: 4;
+  font-size: 11px;
+  color: rgba(255,255,255,.38);
+}
+
+/* ── Body ── */
+.nil-vc-body {
+  padding: 18px 20px 20px;
+  border-top: .5px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.nil-vc-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+  height: 68px;
+  overflow: hidden;
+}
+
+.nil-vc-partner {
+  font-size: 11.5px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 1px;
+  background: var(--gold-dim);
+  color: var(--gold);
+  border: .5px solid var(--rule-gold);
+  display: inline-block;
+  align-self: flex-start;
+}
+
+.nil-vc-logo-slot img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.nil-vc-logo-slot {
+  align-self: flex-start;
+}
+
+/* Stats grid */
+.nil-vc-stats {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+.nil-vc-stats.cols-2 { grid-template-columns: repeat(2,1fr); }
+.nil-vc-stats.cols-3 { grid-template-columns: repeat(3,1fr); }
+.nil-vc-stats.cols-4 { grid-template-columns: repeat(2,1fr); }
+
+.nil-vc-sc {
+  background: var(--s3);
+  border-radius: 1px;
+  padding: 10px 12px;
+}
+.nil-vc-sv {
+  font-family: 'Tourney', sans-serif;
+  font-weight: 600;
+  font-size: 50px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.nil-vc-sl {
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--tx2);
+  line-height: 1.3;
+}
+
+.nil-vc-quote {
+  font-weight: 300;
+  font-size: 13.2px;
+  line-height: 1.6;
+  color: var(--tx1);
+  border-left: 2px solid var(--rule-gold);
+  padding-left: 10px;
+  margin-top: 14px;
+}
+
+.nil-vc-title {
+  font-weight: 500;
+  font-size: 13.2px;
+  color: var(--gold);
+  letter-spacing: .03em;
+  line-height: 1.3;
+}
+
+/* ── Lightbox ── */
+.nil-lb-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0,0,0,.88);
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+}
+.nil-lb-overlay.open { display: flex; }
+
+.nil-lb-box {
+  position: relative;
+  width: min(92vw, 960px);
+  background: var(--s1);
+  border: .5px solid var(--rule-md);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.nil-lb-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  z-index: 10;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.6);
+  border: .5px solid var(--rule-md);
+  color: var(--tx2);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, color .2s;
+}
+.nil-lb-close:hover { background: var(--s3); color: var(--white); }
+
+.nil-lb-vid-wrap {
+  aspect-ratio: 16/9;
+  position: relative;
+  background: #000;
+}
+.nil-lb-vid-wrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.nil-lb-meta {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-top: .5px solid var(--rule);
+}
+.nil-lb-school {
+  font-family: 'Tourney', sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nil-lb-brand {
+  font-size: 18px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--tx3);
+  margin-top: 2px;
+}
+.nil-lb-logo {
+  margin-left: auto;
+  flex-shrink: 0;
+  max-width: 240px;
+  max-height: 88px;
+}
+.nil-lb-logo img {
+  max-width: 100%;
+  max-height: 88px;
+  object-fit: contain;
+}
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .nil-video-grid { grid-template-columns: 1fr; }
+  .nil-vc-sv { font-size: 28px; }
+}
+@media (max-width: 1050px) and (min-width: 701px) {
+  .nil-video-grid { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ── 2×3 Brand Partner Video Grid ── -->
+<div class="nil-video-grid">
+
+  <!-- Card 1: Colorado State University / Markley Motors -->
+  <div class="nil-vc" onclick="openNilVC(this)">
+    <div class="nil-vc-thumb">
+      <video class="nil-vc-bg" src="https://video.wixstatic.com/video/cf1fe3_8abdf7b4b113469184de5cfbd82cf9eb/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+      <div class="nil-vc-ovl"></div>
+      <div class="nil-vc-play"><div class="t-play-ring"><div class="t-play-tri"></div></div></div>
+      <div class="nil-vc-badge">Colorado State University</div>
+      <div class="nil-vc-dur">—:——</div>
+    </div>
+    <div class="nil-vc-body">
+      <div class="nil-vc-header">
+        <div class="nil-vc-partner">× Markley Motors</div>
+        <div class="nil-vc-logo-slot" style="width:110px;height:auto;background:none;border:none;">
+          <img src="https://static.wixstatic.com/media/f18102_454510fbacf84f049fb03c30f0fb8630~mv2.png" alt="Markley Motors" style="width:126px;height:auto;object-fit:contain;padding:0;filter:none;">
+        </div>
+      </div>
+      <div class="nil-vc-stats cols-4">
+        <div class="nil-vc-sc"><div class="nil-vc-sv">6</div><div class="nil-vc-sl">Student-Athletes</div></div>
+        <div class="nil-vc-sc"><div class="nil-vc-sv">4</div><div class="nil-vc-sl">Sports</div></div>
+        <div class="nil-vc-sc"><div class="nil-vc-sv">3.93%</div><div class="nil-vc-sv" style="display:none"></div><div class="nil-vc-sl">Engagement Rate</div></div>
+        <div class="nil-vc-sc"><div class="nil-vc-sv">23</div><div class="nil-vc-sl">Media Assets</div></div>
+      </div>
+      <div class="nil-vc-quote" style="margin-top:14px">"Every time we post our student-athletes on Instagram and tag them, we get 10X the usual engagement. People ask questions in our messages and show support through likes and sharing the content!"</div>
+      <div class="nil-vc-title" style="margin-top:10px;margin-bottom:0">— Carrie Baumgart, Owner and CEO of Markley Motors</div>
+    </div>
+  </div>
+
+  <!-- Card 2: University of Oklahoma / Sonic -->
+  <div class="nil-vc" onclick="openNilVC(this)">
+    <div class="nil-vc-thumb">
+      <video class="nil-vc-bg" src="https://video.wixstatic.com/video/cf1fe3_dc3643d22ee942f79d185e6f64bb86d0/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+      <div class="nil-vc-ovl"></div>
+      <div class="nil-vc-play"><div class="t-play-ring"><div class="t-play-tri"></div></div></div>
+      <div class="nil-vc-badge">University of Oklahoma</div>
+      <div class="nil-vc-dur">—:——</div>
+    </div>
+    <div class="nil-vc-body">
+      <div class="nil-vc-header">
+        <div class="nil-vc-partner">× Sonic</div>
+        <div class="nil-vc-logo-slot" style="width:110px;height:auto;background:none;border:none;">
+          <img src="https://static.wixstatic.com/media/f18102_a3d9b22992e841ac9cbf742a97f76635~mv2.png" alt="Sonic" style="width:110px;height:auto;object-fit:contain;padding:0;mix-blend-mode:screen;filter:none;">
+        </div>
+      </div>
+      <div class="nil-vc-stats cols-2">
+        <div class="nil-vc-sc"><div class="nil-vc-sv">+61%</div><div class="nil-vc-sl">Sales Increase</div></div>
+        <div class="nil-vc-sc"><div class="nil-vc-sv">+81%</div><div class="nil-vc-sl">Traffic Growth</div></div>
+      </div>
+      <div class="nil-vc-title" style="margin-top:12px;margin-bottom:0;color:var(--tx2);font-weight:300;font-size:11.5px">Whole Softball Team · vs. previous 4 weeks</div>
+      <div class="nil-vc-quote" style="margin-top:14px">"I would say the event was a great success on our end!! After looking at the numbers we saw a 47% increase in sales and a 58% increase in traffic for those three hours based on the prior four weeks."</div>
+      <div class="nil-vc-title" style="margin-top:10px;margin-bottom:0">— Sooner Sports Properties</div>
+    </div>
+  </div>
+
+  <!-- Card 3: Texas Tech University / Whataburger -->
+  <div class="nil-vc" onclick="openNilVC(this)">
+    <div class="nil-vc-thumb">
+      <video class="nil-vc-bg" src="https://video.wixstatic.com/video/cf1fe3_f492154776d640e1a89feb1c2596cf08/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+      <div class="nil-vc-ovl"></div>
+      <div class="nil-vc-play"><div class="t-play-ring"><div class="t-play-tri"></div></div></div>
+      <div class="nil-vc-badge">Texas Tech University</div>
+      <div class="nil-vc-dur">—:——</div>
+    </div>
+    <div class="nil-vc-body">
+      <div class="nil-vc-header">
+        <div class="nil-vc-partner">× Whataburger</div>
+        <div class="nil-vc-logo-slot" style="width:110px;height:auto;background:none;border:none;">
+          <img src="https://static.wixstatic.com/media/cf1fe3_5045ea5069e04903b1284c196d958c1b~mv2.png" alt="Whataburger" style="width:110px;height:auto;object-fit:contain;padding:0;filter:none;">
+        </div>
+      </div>
+      <div class="nil-vc-stats cols-4">
+        <div class="nil-vc-sc"><div class="nil-vc-sv">10</div><div class="nil-vc-sl">Student-Athletes</div></div>
+        <div class="nil-vc-sc"><div class="nil-vc-sv">5</div><div class="nil-vc-sl">Sports</div></div>
+        <div class="nil-vc-sc"><div class="nil-vc-sv">5</div><div class="nil-vc-sl">Activations</div></div>
+        <div class="nil-vc-sc"><div class="nil-vc-sv">33</div><div class="nil-vc-sl">Social Posts</div></div>
+      </div>
+      <div class="nil-vc-quote" style="margin-top:14px">Whataburger strengthened their partnership with Texas Tech by incorporating student-athletes into various events, creating authentic connections for Raiders.</div>
+    </div>
+  </div>
+
+	
+	  <!-- Card 4: University of Iowa / SCHEELS IOWA CITY -->
+  <div class="nil-vc" data-logo-src="https://static.wixstatic.com/shapes/cf1fe3_4626401244964546814562f3507adfde.svg" onclick="openNilVC(this)">
+    <div class="nil-vc-thumb">
+      <video class="nil-vc-bg" src="https://video.wixstatic.com/video/cf1fe3_4b838e3bfdb84dd39c74af05252f4bbc/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+      <div class="nil-vc-ovl"></div>
+      <div class="nil-vc-play"><div class="t-play-ring"><div class="t-play-tri"></div></div></div>
+      <div class="nil-vc-badge">University of Iowa</div>
+      <div class="nil-vc-dur">—:——</div>
+    </div>
+    <div class="nil-vc-body">
+      <div class="nil-vc-header">
+        <div class="nil-vc-partner">× Scheels IOWA CITY</div>
+        <div class="nil-vc-logo-slot" style="width:110px;height:auto;background:none;border:none;">
+          <img src="https://static.wixstatic.com/shapes/cf1fe3_4626401244964546814562f3507adfde.svg" alt="SCHEELS" style="width:110px;height:auto;object-fit:contain;padding:0;filter:none;">
+        </div>
+      </div>
+      <div class="nil-vc-stats cols-2" style="grid-template-columns:1fr">
+        <div class="nil-vc-sc"><div class="nil-vc-sv">565K+</div><div class="nil-vc-sl">Impressions</div></div>
+      </div>
+      <div class="nil-vc-quote" style="margin-top:14px">“Working with Hawkeye student-athletes on the Holiday Shopping Spree campaign was a fantastic experience. The content turned out incredibly engaging and authentic, and it was a great way for us to connect with fans in a meaningful way.” </div>
+		<div class="nil-vc-title" style="margin-top:10px;margin-bottom:0">— Ariel White, Marketing Lead of SCHEELS Iowa City</div>
+    </div>
+  </div>
+	
+  <!-- Card 5: University of Texas / St. David's -->
+  <div class="nil-vc" onclick="openNilVC(this)">
+    <div class="nil-vc-thumb">
+      <video class="nil-vc-bg" src="https://video.wixstatic.com/video/cf1fe3_ffe9a3622d36476094e218f21760cd07/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+      <div class="nil-vc-ovl"></div>
+      <div class="nil-vc-play"><div class="t-play-ring"><div class="t-play-tri"></div></div></div>
+      <div class="nil-vc-badge">University of Texas</div>
+      <div class="nil-vc-dur">—:——</div>
+    </div>
+    <div class="nil-vc-body">
+      <div class="nil-vc-header">
+        <div class="nil-vc-partner">× St. David's</div>
+        <div class="nil-vc-logo-slot" style="width:110px;height:auto;background:none;border:none;">
+          <img src="https://static.wixstatic.com/media/f18102_49833de2cd7f44399359e9fee27195c0~mv2.png" alt="St. David's" style="width:110px;height:auto;object-fit:contain;padding:0;filter:none;">
+        </div>
+      </div>
+      <div class="nil-vc-stats cols-3">
+        <div class="nil-vc-sc"><div class="nil-vc-sv">12</div><div class="nil-vc-sl">Student-Athletes</div></div>
+        <div class="nil-vc-sc"><div class="nil-vc-sv">5</div><div class="nil-vc-sl">Sports</div></div>
+        <div class="nil-vc-sc"><div class="nil-vc-sv">1.4M</div><div class="nil-vc-sl">Impressions</div></div>
+      </div>
+      <div class="nil-vc-quote" style="margin-top:14px">Longhorn Sports Properties and St. David's HealthCare launched the "Born to Be a Longhorn" campaign, integrating student-athlete influencer marketing.</div>
+    </div>
+  </div>
+
+
+
+  <!-- Card 6: University of Kansas / Nebraska Furniture Mart -->
+  <div class="nil-vc" onclick="openNilVC(this)">
+    <div class="nil-vc-thumb">
+      <video class="nil-vc-bg" src="https://video.wixstatic.com/video/cf1fe3_6bd268d8d8e745c786a4d07a427c7830/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+      <div class="nil-vc-ovl"></div>
+      <div class="nil-vc-play"><div class="t-play-ring"><div class="t-play-tri"></div></div></div>
+      <div class="nil-vc-badge">University of Kansas</div>
+      <div class="nil-vc-dur">—:——</div>
+    </div>
+    <div class="nil-vc-body">
+      <div class="nil-vc-header">
+        <div class="nil-vc-partner">× Nebraska Furniture Mart</div>
+        <div class="nil-vc-logo-slot" style="width:110px;height:auto;background:none;border:none;">
+          <img src="https://static.wixstatic.com/media/cf1fe3_51da0f2deefd48689513ed56641a79a5~mv2.png" alt="Nebraska Furniture Mart" style="width:126px;height:auto;object-fit:contain;padding:0;filter:none;">
+        </div>
+      </div>
+      <div class="nil-vc-stats cols-2" style="grid-template-columns:1fr">
+        <div class="nil-vc-sc"><div class="nil-vc-sv">300K+</div><div class="nil-vc-sl">Impressions</div></div>
+      </div>
+      <div class="nil-vc-quote" style="margin-top:14px">Jayhawk Sports Properties elevated its partnership with Nebraska Furniture Mart through a high-impact campaign featuring a KU student-athlete, driving authentic engagement and strengthening brand connection with fans.</div>
+    </div>
+  </div>
+
+</div><!-- /nil-video-grid -->
+
+
+<!-- ── Inline Lightbox ── -->
+<div class="nil-lb-overlay" id="nilLbOverlay" onclick="closeLb(event)">
+  <div class="nil-lb-box" id="nilLbBox">
+    <button class="nil-lb-close" onclick="closeLbBtn()" aria-label="Close">✕</button>
+    <div class="nil-lb-vid-wrap">
+      <video id="nilLbVideo" controls playsinline style="width:100%;height:100%;object-fit:contain;display:block;background:#000;"></video>
+    </div>
+    <div class="nil-lb-meta">
+      <div>
+        <div class="nil-lb-school" id="nilLbSchool"></div>
+        <div class="nil-lb-brand" id="nilLbBrand"></div>
+      </div>
+      <div class="nil-lb-logo" id="nilLbLogo"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function openNilVC(el) {
+  const card    = el.closest ? el.closest('.nil-vc') : el;
+  const vidEl   = card.querySelector('.nil-vc-bg');
+  const badge   = card.querySelector('.nil-vc-badge');
+  const partner = card.querySelector('.nil-vc-partner');
+  const logoImg = card.querySelector('.nil-vc-logo-slot img');
+
+  const lbVid    = document.getElementById('nilLbVideo');
+  const lbSchool = document.getElementById('nilLbSchool');
+  const lbBrand  = document.getElementById('nilLbBrand');
+  const lbLogo   = document.getElementById('nilLbLogo');
+  const overlay  = document.getElementById('nilLbOverlay');
+
+  if (vidEl && vidEl.src) {
+    lbVid.src = vidEl.src;
+  }
+  lbSchool.textContent = badge   ? badge.textContent   : '';
+  lbBrand.textContent  = partner ? partner.textContent : '';
+  const logoSrc = card.dataset.logoSrc || (logoImg ? logoImg.src : '');
+  if (logoSrc && logoSrc.includes('cf1fe3_4626401244964546814562f3507adfde')) {
+    lbLogo.innerHTML = '<object type="image/svg+xml" data="https://static.wixstatic.com/shapes/cf1fe3_4626401244964546814562f3507adfde.svg" style="width:240px;height:88px;display:block;pointer-events:none;"><img src="https://static.wixstatic.com/shapes/cf1fe3_4626401244964546814562f3507adfde.svg" alt="SCHEELS" width="240" height="88" style="width:240px;height:88px;object-fit:contain;display:block;"></object>';
+  } else {
+    lbLogo.innerHTML = logoSrc ? '<img src="' + logoSrc + '" alt="partner logo" style="max-width:100%;max-height:88px;object-fit:contain;">' : '';
+  }
+
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  lbVid.play().catch(function(){});
+}
+
+function closeLb(e) {
+  if (e.target === document.getElementById('nilLbOverlay')) closeLbBtn();
+}
+
+function closeLbBtn() {
+  const overlay = document.getElementById('nilLbOverlay');
+  const lbVid   = document.getElementById('nilLbVideo');
+  overlay.classList.remove('open');
+  lbVid.pause();
+  lbVid.src = '';
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeLbBtn();
+});
+</script>
+	
+	<script>
+  function sendHeight() {
+    const height = document.body.scrollHeight;
+    window.parent.postMessage({ height: height }, '*');
+  }
+
+  // Send height on load and whenever content changes
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+
+  // Also watch for any dynamic content changes
+  const observer = new MutationObserver(sendHeight);
+  observer.observe(document.body, { childList: true, subtree: true });
+</script>
+</body>
+</html>
