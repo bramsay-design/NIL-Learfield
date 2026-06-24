@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stories Behind the Student-Athlete</title>
+<link href="https://fonts.googleapis.com/css2?family=Tourney:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ─── Brand Tokens ─── */
+:root {
+  --midnight:   #000000;
+  --white:      #FFFFFF;
+  --gold:       #D0B787;
+  --light-gold: #FAEFB9;
+  --dark-gold:  #A58338;
+  --grad:       linear-gradient(45deg, #A58338 0%, #D0B787 55%, #FAEFB9 100%);
+  --grad-h:     linear-gradient(90deg, #A58338 0%, #D0B787 55%, #FAEFB9 100%);
+  --s1: #0d0d0d;
+  --s2: #141414;
+  --s3: #1a1a1a;
+  --s4: #222222;
+  --rule:      rgba(255,255,255,0.07);
+  --rule-md:   rgba(255,255,255,0.13);
+  --rule-gold: rgba(208,183,135,0.2);
+  --tx1: #FFFFFF;
+  --tx2: rgba(255,255,255,0.52);
+  --tx3: rgba(255,255,255,0.28);
+  --tx4: rgba(255,255,255,0.4);
+  --gold-dim:  rgba(208,183,135,0.09);
+  --gold-glow: rgba(208,183,135,0.05);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; scroll-behavior: smooth; }
+body {
+  background: var(--midnight);
+  color: var(--tx1);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.6;
+  overflow-x: hidden;
+  font-size: 19.4px;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+/* ─── Category Tab Row ─── */
+.cat-tab-row {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 40px;
+  border-bottom: .5px solid var(--rule);
+  padding: 0 4px;
+}
+.cat-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 14px 28px 14px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  margin-bottom: -1px;
+}
+.cat-tab:hover { background: var(--s2); }
+.cat-tab.active { border-bottom-color: var(--gold); }
+.cat-tab-name {
+  font-family: 'Tourney', sans-serif;
+  font-weight: 600;
+  font-size: 16.5px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+  margin-bottom: 3px;
+}
+.cat-tab:not(.active) .cat-tab-name {
+  background: none;
+  -webkit-text-fill-color: var(--tx2);
+  color: var(--tx2);
+}
+.cat-tab-sports {
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--tx4);
+}
+
+/* ─── Story Grid ─── */
+.story-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: transparent;
+}
+
+@media (max-width: 900px) {
+  .story-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .story-grid {
+    grid-template-columns: 1fr;
+  }
+  .cat-tab {
+    padding: 12px 16px;
+  }
+  .cat-tab-name {
+    font-size: 13px;
+  }
+  .cat-tab-sports {
+    display: none;
+  }
+}
+
+/* ─── Story Card ─── */
+.sc {
+  background: var(--midnight);
+  cursor: pointer;
+  transition: background .2s;
+  position: relative;
+  overflow: hidden;
+  outline: 1px solid var(--rule);
+}
+.sc:hover { background: var(--s2); }
+.sc.hidden { display: none; }
+
+/* Thumbnail */
+.sc-thumb {
+  width: 100%;
+  aspect-ratio: 16/9;
+  position: relative;
+  overflow: hidden;
+}
+.sc-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+.sc-play-video { z-index: 5; opacity: 1 !important; cursor: pointer; transition: opacity .25s; }
+.sc-thumb.is-playing .sc-play-video { opacity: 0 !important; }
+.sc-thumb-bg { position: absolute; inset: 0; transition: transform .42s ease; }
+.sc:hover .sc-thumb-bg { transform: scale(1.05); }
+.bg1 { background: linear-gradient(135deg, #1a0e04 0%, #0f0903 100%); }
+.bg2 { background: linear-gradient(135deg, #041410 0%, #030e0b 100%); }
+.bg3 { background: linear-gradient(135deg, #080c1c 0%, #04060f 100%); }
+.bg4 { background: linear-gradient(135deg, #180a03 0%, #100604 100%); }
+.bg5 { background: linear-gradient(135deg, #0c041a 0%, #070312 100%); }
+.bg6 { background: linear-gradient(135deg, #031016 0%, #020b0f 100%); }
+
+.sc-thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,.011) 28px, rgba(255,255,255,.011) 28.5px),
+    repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(255,255,255,.011) 28px, rgba(255,255,255,.011) 28.5px);
+}
+.sc-ovl {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 2;
+  transition: background .4s ease;
+}
+.sc:hover .sc-ovl { background: rgba(0,0,0,0); }
+.sc-play {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.sc:hover .sc-play { opacity: 1; }
+.scp-ring {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(208,183,135,.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(208,183,135,.07);
+}
+.scp-tri {
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 11px solid var(--gold);
+  margin-left: 2px;
+}
+.sc-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 4;
+  font-size: 9.9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 1px;
+}
+.b-bs  { background: rgba(26,14,4,.85);   color: #e0b97a; border: .5px solid rgba(224,185,122,.2); }
+.b-sw  { background: rgba(4,16,15,.85);   color: #7adbb5; border: .5px solid rgba(122,219,181,.2); }
+.b-fb  { background: rgba(8,10,22,.85);   color: #7a9ae0; border: .5px solid rgba(122,154,224,.2); }
+.b-bk  { background: rgba(22,10,4,.85);   color: #e0977a; border: .5px solid rgba(224,151,122,.2); }
+.b-wbk { background: rgba(12,4,24,.85);   color: #c07ae0; border: .5px solid rgba(192,122,224,.2); }
+.b-tr  { background: rgba(4,16,20,.85);   color: #7acce0; border: .5px solid rgba(122,204,224,.2); }
+.b-sft { background: rgba(4,14,4,.85);    color: #7ae097; border: .5px solid rgba(122,224,151,.2); }
+.b-vb  { background: rgba(20,12,4,.85);   color: #e0c47a; border: .5px solid rgba(224,196,122,.2); }
+.b-hk  { background: rgba(4,10,20,.85);   color: #7ab4e0; border: .5px solid rgba(122,180,224,.2); }
+.b-gym { background: rgba(20,4,10,.85);   color: #e07ab4; border: .5px solid rgba(224,122,180,.2); }
+.b-lax { background: rgba(4,18,8,.85);    color: #7ae0a0; border: .5px solid rgba(122,224,160,.2); }
+.b-wr  { background: rgba(18,8,4,.85);    color: #e09a7a; border: .5px solid rgba(224,154,122,.2); }
+.sc-dur {
+  position: absolute;
+  bottom: 9px;
+  right: 10px;
+  z-index: 4;
+  font-size: 11px;
+  color: rgba(255,255,255,.38);
+}
+
+/* Card body */
+.sc-body { padding: 20px 22px 22px; }
+.sc-body-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.sc-name-block { flex: 1; min-width: 0; }
+.sc-name  { font-weight: 500; font-size: 15.4px; color: var(--white); margin-bottom: 2px; }
+.sc-school { font-size: 12.1px; color: var(--tx2); margin-bottom: 11px; letter-spacing: .02em; }
+.sc-logo-slot {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #888;
+  font-weight: 500;
+  text-align: center;
+  overflow: visible;
+}
+.sc-logo-slot img { width: 100%; height: 100%; object-fit: contain; padding: 0; }
+.sc-logo-pair { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.sc-logo-x { font-size: 10px; color: var(--tx3); font-weight: 400; letter-spacing: .05em; line-height: 1; }
+.sc-partner-line {
+  font-size: 12.1px;
+  letter-spacing: .04em;
+  color: var(--gold);
+  font-weight: 400;
+  margin-bottom: 10px;
+  opacity: .8;
+}
+.sc-quote {
+  font-weight: 300;
+  font-size: 14.3px;
+  line-height: 1.55;
+  color: var(--tx1);
+  margin-bottom: 13px;
+}
+
+/* ─── Lightbox ─── */
+#lbOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: rgba(0,0,0,.88);
+  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+#lbOverlay.open { display: flex; }
+#lbBox {
+  background: var(--s1);
+  border: .5px solid var(--rule-gold);
+  border-radius: 3px;
+  max-width: 760px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+#lbClose {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 10;
+  font-size: 22px;
+  color: var(--tx3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+  transition: color .2s;
+}
+#lbClose:hover { color: var(--white); }
+#lbVid {
+  width: 100%;
+  aspect-ratio: 16/9;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+}
+#lbVidBg  { position: absolute; inset: 0; }
+#lbVideo  { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+#lbPring  {
+  position: absolute; inset: 0; z-index: 3;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.lb-play-ring {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: 2px solid rgba(208,183,135,.6);
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(208,183,135,.1);
+  transition: transform .2s;
+}
+.lb-play-ring:hover { transform: scale(1.1); }
+.lb-play-tri {
+  width: 0; height: 0;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left: 16px solid var(--gold);
+  margin-left: 4px;
+}
+#lbInfo { padding: 24px 28px 28px; }
+#lbVBadge {
+  display: inline-block;
+  font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 1px;
+  background: var(--gold-dim); color: var(--gold);
+  border: .5px solid var(--rule-gold);
+  margin-bottom: 14px;
+}
+#lbAName {
+  font-family: 'Tourney', sans-serif; font-weight: 600;
+  font-size: clamp(20px, 3vw, 28px); text-transform: uppercase;
+  background: var(--grad); -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1.1; margin-bottom: 4px;
+}
+#lbAMeta { font-size: 13px; color: var(--tx3); letter-spacing: .05em; margin-bottom: 16px; }
+#lbQuote {
+  font-style: italic; font-weight: 300; font-size: 15px;
+  color: var(--tx2); line-height: 1.65; margin-bottom: 16px;
+}
+#lbBrand {
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--gold); opacity: .75;
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     STORIES BEHIND THE STUDENT-ATHLETE
+     Wix Studio Custom Code Embed
+══════════════════════════════════════════ -->
+<div style="padding: 0; background: var(--midnight);">
+
+  <!-- Season tabs -->
+  <div class="cat-tab-row">
+    <button class="cat-tab active" onclick="switchCategory(this,'fall')">
+      <span class="cat-tab-name">Fall</span>
+      <span class="cat-tab-sports">Football · Hockey</span>
+    </button>
+    <button class="cat-tab" onclick="switchCategory(this,'winter')">
+      <span class="cat-tab-name">Winter</span>
+      <span class="cat-tab-sports">Basketball · Swim &amp; Dive · Gymnastics</span>
+    </button>
+    <button class="cat-tab" onclick="switchCategory(this,'spring')">
+      <span class="cat-tab-name">Spring</span>
+      <span class="cat-tab-sports">Baseball · Softball · Volleyball · Lacrosse · Wrestling</span>
+    </button>
+  </div>
+
+  <!-- ── FALL GRID ── -->
+  <div class="story-grid cat-grid" id="catFall">
+
+    <div class="sc" data-sport="fb" data-athlete="Conner Tollison" data-sl="Football" data-brand="First State Community Bank" data-bg="bg3" data-quote="It means a lot getting to spend time with these kids. You know, it is very fortunate for me. It is something I have never gotten to do before. - Conner Tollison" data-season="fall" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_e2f93306c2c34d98a58a85614e0b2cd0/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg3"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-fb">Football</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">2:14</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Conner Tollison</div><div class="sc-school">University of Missouri</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/shapes/cf1fe3_adfdf32299b847c8b7d474f2f0c637eb.svg" alt="University of Missouri"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_45f413bf02c345b0b54717e795599cb9~mv2.png" alt="First State Community Bank"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× First State Community Bank</div>
+        <div class="sc-quote">It means a lot getting to spend time with these kids. You know, it is very fortunate for me. It is something I have never gotten to do before. - Conner Tollison</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="fb" data-athlete="Jaxon Howard" data-sl="Football" data-brand="Nutrisource" data-bg="bg1" data-quote="The way I would say that dogs help people mentally is just that they don't really have any hatred in their heart. ...This guy just brings me so much happiness and I think he can bring others happiness as well. - Jaxon Howard" data-season="fall" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_aa6c9a97445046e8936ef3e2f097e9d2/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg1"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-fb">Football</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Jaxon Howard</div><div class="sc-school">University of Minnesota</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/gophersports.com/images/nextgen_2022/main_logo.svg" alt="University of Minnesota"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_dd1ef664c6ca4e14864db8b9bc2b8c87~mv2.png" alt="Nutrisource"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Nutrisource</div>
+        <div class="sc-quote">The way I would say that dogs help people mentally is just that they don't really have any hatred in their heart. ...This guy just brings me so much happiness and I think he can bring others happiness as well. - Jaxon Howard</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="fb" data-athlete="Ethan Goodin" data-sl="Football" data-brand="Legence Bank" data-bg="bg4" data-quote="Farming definitely helped me with my career in football through the hard work... I think it is huge for me to be able to represent SIU, Legence and also my hometown all at the same time. - Ethan Goodin" data-season="fall" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_73d3c0e79a5a42e9afb4ea84d6e38d7f/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg4"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-fb">Football</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Ethan Goodin</div><div class="sc-school">Southern Illinois University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/shapes/cf1fe3_e61d35b2668442eca66af7933a3581d4.svg" alt="Southern Illinois University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://www.legencebank.com/custom/legencebank/image/logo-2x.png" alt="Legence Bank"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Legence Bank</div>
+        <div class="sc-quote">Farming definitely helped me with my career in football through the hard work... I think it is huge for me to be able to represent SIU, Legence and also my hometown all at the same time. - Ethan Goodin</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="hk" data-athlete="McKayla Zilisch" data-sl="Women's Hockey" data-brand="Exact Sciences" data-bg="bg2" data-quote="The main message is getting testing done so you can prevent cancer spreading. And so because of that, I think this is a really cool opportunity to use my platform and pass along a message that has impacted myself, but I know also impacts a lot of other people. - McKayla Zilisch" data-season="fall" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_ccccaa97d6cc4d488e195fdba71e608e/720p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg2"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-hk">Women's Hockey</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">McKayla Zilisch</div><div class="sc-school">University of Wisconsin</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/shapes/cf1fe3_4c7e4021f17e4765924912725e796698.svg" alt="University of Wisconsin"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://www.nicepng.com/png/full/243-2430966_abbott-logo-tiff-logo-white.png" alt="Exact Sciences"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Exact Sciences</div>
+        <div class="sc-quote">The main message is getting testing done so you can prevent cancer spreading. And so because of that, I think this is a really cool opportunity to use my platform and pass along a message that has impacted myself, but I know also impacts a lot of other people. - McKayla Zilisch</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="hk" data-athlete="Chase Cheslock" data-sl="Men's Hockey" data-brand="The Minnesota Star Tribune" data-bg="bg5" data-quote="Tommie Sports Properties partnered with the Minnesota Star Tribune and did two &quot;Homegrown Tommies&quot; athlete spotlights highlighting local Minnesotans playing sports at St. Thomas." data-season="fall" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_cbd5d2b63cf84f83aba0cc0d7d4f8321/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg5"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-hk">Men's Hockey</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Chase Cheslock</div><div class="sc-school">St. Thomas University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/tommiesports.com/images/integration_2024/logo_main.svg" alt="St. Thomas University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_00270f9cb5fc40cf9841711abaa62f62~mv2.png" alt="Minnesota Star Tribune"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Minnesota Star Tribune</div>
+        <div class="sc-quote">Tommie Sports Properties partnered with the Minnesota Star Tribune and did two "Homegrown Tommies" athlete spotlights highlighting local Minnesotans playing sports at St. Thomas.</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="fb" data-athlete="Reggie Love II &amp; Caleb Hood" data-sl="Football" data-brand="Lenovo" data-bg="bg2" data-quote="Nothing like the family to get you motivated, man. I can't stop smiling. Thank you, Lenovo, for the you know, tablet and message. Nothing I'd rather watch it on. - Reggie Love II" data-season="fall" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_06ffa8ac75674c439e0c71efb8ad3dc7/720p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg2"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-fb">Football</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Reggie Love II &amp; Caleb Hood</div><div class="sc-school">North Carolina</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/shapes/cf1fe3_a3881eea6eee4f63b9a5d13c5fff1520.svg" alt="North Carolina"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_7bb67d82ee4c4f35a3c17c6b2029c718~mv2.jpg" alt="Lenovo"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Lenovo</div>
+        <div class="sc-quote">Nothing like the family to get you motivated, man. I can't stop smiling. Thank you, Lenovo, for the you know, tablet and message. Nothing I'd rather watch it on. - Reggie Love II</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="fb" data-athlete="Zach Twedt" data-sl="Football" data-brand="Iowa Corn" data-bg="bg5" data-quote="They understand where we come from. You know, people like you and I that grew up on a farm are doing these things at a really young age, working their butt off and aren't afraid of doing some of The Dirty work. - Zach Twedt" data-season="fall" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_8f477b046094495f9c130629b7f66d38/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg5"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-fb">Football</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Zach Twedt</div><div class="sc-school">University of Iowa</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://hawkeyesports.com/imgproxy/XqoMx2kh2NyLhch4Hj0ZLajUeGY7jTc9thQ14z-XNiw/rs:fit:1980:0:0/g:ce/q:90/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL2hhd2tleWVzcG9ydHMtcHJvZC8yMDIxLzAyL2NmNTQwOTkwLWxvZ28tZTE3MjI4NzU3NTYxNzgucG5n.png" alt="University of Iowa"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_177581bea27240008d8a219c201e2cc8~mv2.png" alt="Iowa Corn"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Iowa Corn</div>
+        <div class="sc-quote">They understand where we come from. You know, people like you and I that grew up on a farm are doing these things at a really young age, working their butt off and aren't afraid of doing some of The Dirty work. - Zach Twedt</div>
+      </div>
+    </div>
+
+  </div><!-- /catFall -->
+
+  <!-- ── WINTER GRID ── -->
+  <div class="story-grid cat-grid" id="catWinter" style="display:none">
+
+    <div class="sc" data-sport="bk" data-athlete="Bhan Buom" data-sl="Men's Basketball" data-brand="Minky Couture" data-bg="bg4" data-quote="It brings so much joy to her to know that there's people out there that are thinking about her that care enough to come and, you know, say hi and to provide some sort of comfort item for her to use while she's here. - Maria Alexander, Pediatric Nurse, St Luke's Children's Cancer Institute" data-season="winter" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_f94674c00bba40f7b898ccbbe029beb3/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg4"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-bk">Men's Basketball</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Bhan Buom</div><div class="sc-school">Boise State University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/shapes/cf1fe3_57b52d34657347188b2bbf04e4edafec.svg" alt="Boise State University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_c791ed3855c84982a98c8c57ebece3d9~mv2.webp" alt="Minky Couture"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Minky Couture</div>
+        <div class="sc-quote">It brings so much joy to her to know that there's people out there that are thinking about her that care enough to come and, you know, say hi and to provide some sort of comfort item for her to use while she's here. - Maria Alexander, Pediatric Nurse, St Luke's Children's Cancer Institute</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="bk" data-athlete="Devin Royal" data-sl="Men's Basketball" data-brand="Donatos" data-bg="bg1" data-quote="Quote coming soon." data-season="winter" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_b86e2a381b5446fa9a7f449b7431d13e/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg1"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-bk">Men's Basketball</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Devin Royal</div><div class="sc-school">Ohio State University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/shapes/cf1fe3_8e77d9aa28b84a71bd5d928e81f4dea2.svg" alt="Ohio State University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_6d434986c64d4a0eb6359c9b2b39411f~mv2.png" alt="Donatos"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Donatos</div>
+        <div class="sc-quote">Quote coming soon.</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="wbk" data-athlete="Arianna Jackson, Jada Williams &amp; Mackenzie Hare" data-sl="Women's Basketball" data-brand="Hy-Vee" data-bg="bg5" data-quote="Cyclone Sports Properties partnered with Hyvee to do community service at a local elementary school." data-season="winter" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_1fdd84a56b804ecaa9082c8f3cad47de/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg5"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-wbk">Women's Basketball</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Arianna Jackson, Jada Williams &amp; Mackenzie Hare</div><div class="sc-school">Iowa State University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/isuni.sidearmsports.com/images/nextgen_2024/logo_main.svg" alt="Iowa State University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_b7b463a3a2964ab1af039ad908f274e7~mv2.png" alt="Hy-Vee"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Hy-Vee</div>
+        <div class="sc-quote">Cyclone Sports Properties partnered with Hyvee to do community service at a local elementary school.</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="wbk" data-athlete="Maddy Paz" data-sl="Women's Basketball" data-brand="Donatos" data-bg="bg3" data-quote="I coach for Impact Lacrosse... I chose to coach because I want to give back to the sport that I love so much. It is really cool to give back to the same person that got me to Ohio State. - Maddy Paz" data-season="winter" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_0388749d898042fb8cf25d14b7ccea2a/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg3"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-wbk">Women's Basketball</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Maddy Paz</div><div class="sc-school">Ohio State University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/shapes/cf1fe3_8e77d9aa28b84a71bd5d928e81f4dea2.svg" alt="Ohio State University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_6d434986c64d4a0eb6359c9b2b39411f~mv2.png" alt="Donatos"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Donatos</div>
+        <div class="sc-quote">I coach for Impact Lacrosse... I chose to coach because I want to give back to the sport that I love so much. It is really cool to give back to the same person that got me to Ohio State. - Maddy Paz</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="sw" data-athlete="Carly Plate" data-sl="Women's Swim &amp; Dive" data-brand="ATC" data-bg="bg2" data-quote="Expos like these are super important because it shows kids that there's more to STEM then just math. - Carly Plate" data-season="winter" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_8f53757e463c4f73a5e52ff17c8c925a/1080p/mp4/file.mp4" playsinline preload="auto"></video>
+        <div class="sc-thumb-bg bg2"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-sw">Swim &amp; Dive</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Carly Plate</div><div class="sc-school">UW Milwaukee</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTskfVmv9E_gYf8DpJzK9gSO9m3XMFenYU0Hg&s" alt="UW Milwaukee"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_dbaa300235a742af9f90c2357dca30bd~mv2.png" alt="ATC"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× ATC</div>
+        <div class="sc-quote">Expos like these are super important because it shows kids that there's more to STEM then just math. - Carly Plate</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="gym" data-athlete="Sydnie Whipple" data-sl="Gymnastics" data-brand="Minky Couture" data-bg="bg6" data-quote="It brings so much joy to her to know that there's people out there that are thinking about her that care enough to come and, you know, say hi and to provide some sort of comfort item for her to use while she's here. - Maria Alexander, Pediatric Nurse, St Luke's Children's Cancer Institute" data-season="winter" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_f94674c00bba40f7b898ccbbe029beb3/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg6"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-gym">Gymnastics</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Sydnie Whipple</div><div class="sc-school">Boise State University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/shapes/cf1fe3_57b52d34657347188b2bbf04e4edafec.svg" alt="Boise State University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_c791ed3855c84982a98c8c57ebece3d9~mv2.webp" alt="Minky Couture"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Minky Couture</div>
+        <div class="sc-quote">It brings so much joy to her to know that there's people out there that are thinking about her that care enough to come and, you know, say hi and to provide some sort of comfort item for her to use while she's here. - Maria Alexander, Pediatric Nurse, St Luke's Children's Cancer Institute</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="bk" data-athlete="Julius Thedford, Mason Matthews &amp; Daejah Richmond" data-sl="Basketball" data-brand="Pepsi" data-bg="bg6" data-quote="It means everything to me. Just being from here and knowing there's less fortunate families out there. I can come here and put a smile on their faces ... it just warms my heart. - Julius Thedford" data-season="winter" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_6b47c3645058480c8fef157c064a3c80/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg6"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-bk">Basketball</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Julius Thedford, Mason Matthews &amp; Daejah Richmond</div><div class="sc-school">Middle Tennessee</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/gotigersgo.com/images/nextgen_2023/logo_main.svg" alt="Middle Tennessee"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_eeef7917d372490aaf0f2029ded9e2b1~mv2.png" alt="Pepsi"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Pepsi</div>
+        <div class="sc-quote">It means everything to me. Just being from here and knowing there's less fortunate families out there. I can come here and put a smile on their faces ... it just warms my heart. - Julius Thedford</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="bk" data-athlete="Yaniel Rivera" data-sl="Men's Basketball" data-brand="Keith and Lorfing" data-bg="bg3" data-quote="Every dream needs a believer. For players, it might be your mom, a coach or teammate. For my clients, it's an attorney that will fight for them. - Russle Floring" data-season="winter" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_19d4c86a40e14f00a382db5291614e8f/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg3"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-bk">Men's Basketball</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Yaniel Rivera</div><div class="sc-school">Abilene Christian University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/shapes/cf1fe3_1c30f26dcfd1410aa45e0b39f546c6ab.svg" alt="Abilene Christian University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_ff64c63d85e242f0b0d52a66d4ae9856~mv2.png" alt="Keith and Lorfing"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Keith and Lorfing</div>
+        <div class="sc-quote">Every dream needs a believer. For players, it might be your mom, a coach or teammate. For my clients, it's an attorney that will fight for them. - Russle Floring</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="wbk" data-athlete="Madi Symons, Payton Muma, Logan Alvar &amp; Jane Rumpf" data-sl="Women's Basketball" data-brand="Ivinson Memorial Hospital" data-bg="bg4" data-quote="Wyoming Sports Properties enhanced their partnership with Ivinson Memorial Hospital by incorporating student-athletes into their campaign for the first time." data-season="winter" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_9034f44e88af4b0095e0a7d26f09dea4/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg4"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-wbk">Women's Basketball</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Madi Symons, Payton Muma, Logan Alvar &amp; Jane Rumpf</div><div class="sc-school">University of Wyoming</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/wyoming.sidearmsports.com/images/responsive_2021/logo_main.svg" alt="University of Wyoming"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_0b70da2b55d8464cb3129cb9986bec65~mv2.png" alt="Ivinson Memorial Hospital"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Ivinson Memorial Hospital</div>
+        <div class="sc-quote">Wyoming Sports Properties enhanced their partnership with Ivinson Memorial Hospital by incorporating student-athletes into their campaign for the first time.</div>
+      </div>
+    </div>
+
+  </div><!-- /catWinter -->
+
+  <!-- ── SPRING GRID ── -->
+  <div class="story-grid cat-grid" id="catSpring" style="display:none">
+
+    <div class="sc" data-sport="bs" data-athlete="Braden Regala" data-sl="Baseball" data-brand="Fuzzy's" data-bg="bg1" data-quote="Abilene Christian Sports Properties partnered with Fuzzy's Taco Shop to create custom tacos for three student-athletes and promote them using a year-round content series." data-season="spring" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_165ad1c813ed41269cc2cc3a579633e9/720p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg1"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-bs">Baseball</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Braden Regala</div><div class="sc-school">Abilene Christian University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/shapes/cf1fe3_1c30f26dcfd1410aa45e0b39f546c6ab.svg" alt="Abilene Christian University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_75c02741ddfd4a3fadd2a88cc21bba1a~mv2.png" alt="Fuzzy's"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Fuzzy's</div>
+        <div class="sc-quote">Abilene Christian Sports Properties partnered with Fuzzy's Taco Shop to create custom tacos for three student-athletes and promote them using a year-round content series.</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="sft" data-athlete="Bella Smithson" data-sl="Softball" data-brand="NYS OCFS" data-bg="bg3" data-quote="I think that the argument of nature versus nurture comes into place because, I mean, my parents, they raised me to be who I am today. And that's how I was able to move past whatever happened to me before. So I would say, do it and you can change your life. - Bella Smithson" data-season="spring" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_47cbd6b90e584828ab041c588fb67abc/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg3"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-sft">Softball</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Bella Smithson</div><div class="sc-school">University at Buffalo</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/ubbulls.com/images/sng_2023/main_nav_logo.svg" alt="University at Buffalo"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_3965fdc3eca8443885691e8d0c55a722~mv2.jpg" alt="NYS OCFS"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× NYS OCFS</div>
+        <div class="sc-quote">I think that the argument of nature versus nurture comes into place because, I mean, my parents, they raised me to be who I am today. And that's how I was able to move past whatever happened to me before. So I would say, do it and you can change your life. - Bella Smithson</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="vb" data-athlete="Kendall Hastings" data-sl="Volleyball" data-brand="Minky Couture" data-bg="bg5" data-quote="It brings so much joy to her to know that there's people out there that are thinking about her that care enough to come and, you know, say hi and to provide some sort of comfort item for her to use while she's here. - Maria Alexander, Pediatric Nurse, St Luke's Children's Cancer Institute" data-season="spring" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_f94674c00bba40f7b898ccbbe029beb3/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg5"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-vb">Volleyball</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Kendall Hastings</div><div class="sc-school">Boise State University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/shapes/cf1fe3_57b52d34657347188b2bbf04e4edafec.svg" alt="Boise State University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_c791ed3855c84982a98c8c57ebece3d9~mv2.webp" alt="Minky Couture"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Minky Couture</div>
+        <div class="sc-quote">It brings so much joy to her to know that there's people out there that are thinking about her that care enough to come and, you know, say hi and to provide some sort of comfort item for her to use while she's here. - Maria Alexander, Pediatric Nurse, St Luke's Children's Cancer Institute</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="vb" data-athlete="Anya Schmidt" data-sl="Women's Volleyball" data-brand="Minnesota Star Tribune" data-bg="bg2" data-quote="Tommie Sports Properties partnered with the Minnesota Star Tribune and did two &quot;Homegrown Tommies&quot; athlete spotlights highlighting local Minnesotans playing sports at St. Thomas." data-season="spring" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_ef68726f8db84beba8c58df2330f50f0/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg2"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-vb">Women's Volleyball</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Anya Schmidt</div><div class="sc-school">St. Thomas University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/tommiesports.com/images/integration_2024/logo_main.svg" alt="St. Thomas University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_00270f9cb5fc40cf9841711abaa62f62~mv2.png" alt="Minnesota Star Tribune"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Minnesota Star Tribune</div>
+        <div class="sc-quote">Tommie Sports Properties partnered with the Minnesota Star Tribune and did two "Homegrown Tommies" athlete spotlights highlighting local Minnesotans playing sports at St. Thomas.</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="lax" data-athlete="Quincee Lilio" data-sl="Women's Lacrosse" data-brand="Three Rivers" data-bg="bg4" data-quote="Mental Wellness is so important not only for our athletes but for our students for our parents for all of our Gamecock family. - Shannon Marcus, CEO of Three Rivers Behavior Health" data-season="spring" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_1d7d2ebd79db4115ad9aece5ae64aa7a/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg4"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-lax">Women's Lacrosse</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Quincee Lilio</div><div class="sc-school">South Carolina University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://storage.googleapis.com/gamecocksonline-com/2022/06/e1edefb7-main_logo.png" alt="South Carolina University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_54cf16abeecd4105918018ec34ce1f0e~mv2.png" alt="Three Rivers"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Three Rivers</div>
+        <div class="sc-quote">Mental Wellness is so important not only for our athletes but for our students for our parents for all of our Gamecock family. - Shannon Marcus, CEO of Three Rivers Behavior Health</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="wr" data-athlete="Tagen Jamison" data-sl="Wrestling" data-brand="Choctaw Tribe" data-bg="bg6" data-quote="Cowboy Sports Properties partnered with the Choctaw Tribe to share Tagen Jamison's story." data-season="spring" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_f4c6b7caea554a7ab5d1ef9123f95c8f/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <div class="sc-thumb-bg bg6"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-wr">Wrestling</div>
+        <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Tagen Jamison</div><div class="sc-school">Oklahoma State University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://dxbhsrqyrr690.cloudfront.net/sidearm.nextgen.sites/soonersports.com/images/nextgen_2024/nav_logo.svg" alt="Oklahoma State University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_fab1028006ab414cb1acdd68149e8a1f~mv2.png" alt="Choctaw Tribe"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Choctaw Tribe</div>
+        <div class="sc-quote">Cowboy Sports Properties partnered with the Choctaw Tribe to share Tagen Jamison's story.</div>
+      </div>
+    </div>
+
+    <div class="sc" data-sport="bk" data-athlete="Trey Kaufman-Renn" data-sl="Basketball" data-brand="Azzip Pizza" data-bg="bg1" data-quote="Purdue Sports Properties partnered with Azzip Pizza using Trey Kaufman-Renn to promote Azzip's build your own pizza style." data-season="spring" onclick="openLB(this)">
+      <div class="sc-thumb">
+        <div class="sc-thumb-bg bg1"></div><div class="sc-ovl"></div>
+        <div class="sc-badge b-bk">Basketball</div>
+        <div class="sc-play"><div class="scp-ring"><div class="scp-tri"></div></div></div>
+        <div class="sc-dur">—:——</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-body-top">
+          <div class="sc-name-block"><div class="sc-name">Trey Kaufman-Renn</div><div class="sc-school">Purdue University</div></div>
+          <div class="sc-logo-pair">
+            <div class="sc-logo-slot"><img src="https://purduesports.com/imgproxy/ht8SAWqofLzc0w4oiP4GjrxDhP0zehvnBnCivfRBbsc/rs:fit:1980:0:0:0/g:ce:0:0/q:90/aHR0cHM6Ly9zdG9yYWdlLmdvb2dsZWFwaXMuY29tL3B1cmR1ZXNwb3J0cy1jb20tcHJvZC8yMDI1LzA2LzAzL1BSTTE4TmEyUU5XWVhzUHVvUmd6VFhuSVVuSFFLdGxsZkFoM0hkT3EucG5n.png" alt="Purdue University"></div>
+            <span class="sc-logo-x">×</span>
+            <div class="sc-logo-slot"><img src="https://static.wixstatic.com/media/cf1fe3_f69fdd554eb34f05a06a45574a6344fc~mv2.png" alt="Azzip Pizza"></div>
+          </div>
+        </div>
+        <div class="sc-partner-line">× Azzip Pizza</div>
+        <div class="sc-quote">Purdue Sports Properties partnered with Azzip Pizza using Trey Kaufman-Renn to promote Azzip's build your own pizza style.</div>
+      </div>
+    </div>
+
+  </div><!-- /catSpring -->
+
+</div><!-- /outer wrapper -->
+
+<!-- ── Lightbox ── -->
+<div id="lbOverlay" onclick="closeLB(event)">
+  <div id="lbBox">
+    <button id="lbClose" onclick="closeLBBtn()">&times;</button>
+    <div id="lbVid">
+      <div id="lbVidBg"></div>
+      <video id="lbVideo" controls playsinline style="display:none;"></video>
+      <div id="lbPring" onclick="togglePlay()">
+        <div class="lb-play-ring"><div class="lb-play-tri"></div></div>
+      </div>
+    </div>
+    <div id="lbInfo">
+      <div id="lbVBadge"></div>
+      <div id="lbAName"></div>
+      <div id="lbAMeta"></div>
+      <div id="lbQuote"></div>
+      <div id="lbBrand"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Season tab switcher ──
+function switchCategory(btn, cat) {
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const map = { fall: 'catFall', winter: 'catWinter', spring: 'catSpring' };
+  Object.values(map).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  const target = document.getElementById(map[cat]);
+  if (target) target.style.display = 'grid';
+}
+
+// ── Lightbox bg map ──
+const bgM = {
+  bg1: 'linear-gradient(135deg,#1a0e04 0%,#0f0903 100%)',
+  bg2: 'linear-gradient(135deg,#041410 0%,#030e0b 100%)',
+  bg3: 'linear-gradient(135deg,#080c1c 0%,#04060f 100%)',
+  bg4: 'linear-gradient(135deg,#180a03 0%,#100604 100%)',
+  bg5: 'linear-gradient(135deg,#0c041a 0%,#070312 100%)',
+  bg6: 'linear-gradient(135deg,#031016 0%,#020b0f 100%)',
+};
+
+function openLB(card) {
+  const d = card.dataset;
+  const vidEl  = document.getElementById('lbVideo');
+  const vidBg  = document.getElementById('lbVidBg');
+  const pring  = document.getElementById('lbPring');
+  const lbVid  = document.getElementById('lbVid');
+  const cardVideo = card.querySelector('video');
+
+  if (cardVideo && cardVideo.src) {
+    vidEl.src = cardVideo.src;
+    vidEl.style.display = 'block';
+    vidBg.style.background = 'transparent';
+    pring.style.display = 'flex';
+    lbVid.style.aspectRatio = '4/3';
+    vidEl.onloadedmetadata = function () {
+      if (vidEl.videoWidth && vidEl.videoHeight) {
+        lbVid.style.aspectRatio = vidEl.videoWidth + '/' + vidEl.videoHeight;
+      }
+    };
+  } else {
+    vidEl.src = '';
+    vidEl.style.display = 'none';
+    vidEl.onloadedmetadata = null;
+    lbVid.style.aspectRatio = '16/9';
+    vidBg.style.background = bgM[d.bg] || '#111';
+    pring.style.display = 'flex';
+  }
+
+  const schoolEl = card.querySelector('.sc-school');
+  document.getElementById('lbVBadge').textContent = d.sl || '';
+  document.getElementById('lbAName').textContent  = d.athlete || '';
+  document.getElementById('lbAMeta').textContent  = schoolEl ? schoolEl.textContent : '';
+  document.getElementById('lbQuote').textContent  = d.quote ? '\u201c' + d.quote + '\u201d' : 'Quote coming soon.';
+  document.getElementById('lbBrand').textContent  = d.brand  ? '\u00d7 ' + d.brand : '';
+
+  document.getElementById('lbOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  if (vidEl.src) vidEl.play().catch(() => {});
+}
+
+function togglePlay() {
+  const v = document.getElementById('lbVideo');
+  if (!v.src) return;
+  if (v.paused) { v.play(); document.getElementById('lbPring').style.display = 'none'; }
+  else { v.pause(); document.getElementById('lbPring').style.display = 'flex'; }
+}
+
+function closeLBBtn() {
+  const v = document.getElementById('lbVideo');
+  v.pause();
+  v.src = '';
+  document.getElementById('lbOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeLB(e) {
+  if (e.target === document.getElementById('lbOverlay')) closeLBBtn();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLBBtn(); });
+</script>
+	
+	<script>
+  function sendHeight() {
+    const height = document.body.scrollHeight;
+    window.parent.postMessage({ height: height }, '*');
+  }
+
+  // Send height on load and whenever content changes
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+
+  // Also watch for any dynamic content changes
+  const observer = new MutationObserver(sendHeight);
+  observer.observe(document.body, { childList: true, subtree: true });
+</script>
+</body>
+</html>
