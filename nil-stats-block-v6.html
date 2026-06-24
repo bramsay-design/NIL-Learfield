@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIL By the Numbers — Stats Embed</title>
+<link href="https://fonts.googleapis.com/css2?family=Tourney:wght@600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ── Brand tokens ── */
+:root {
+  --midnight:   #000000;
+  --gold:       #D0B787;
+  --light-gold: #FAEFB9;
+  --dark-gold:  #A58338;
+  --grad:       linear-gradient(45deg,#A58338 0%,#D0B787 55%,#FAEFB9 100%);
+  --s1: #0d0d0d;
+  --s2: #141414;
+  --rule:      rgba(255,255,255,0.07);
+  --rule-gold: rgba(208,183,135,0.2);
+  --tx1: #FFFFFF;
+  --tx2: rgba(255,255,255,0.52);
+  --tx3: rgba(255,255,255,0.28);
+}
+
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+body {
+  background: var(--s1);
+  color: var(--tx1);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+}
+
+/* ── 2-col stat grid (desktop) ── */
+.stat-band {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, auto);
+  gap: 1px;
+  background: var(--rule);
+  border: .5px solid var(--rule);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+/* ── Individual stat cell ── */
+.stat-cell {
+  padding: 52px 40px;
+  background: transparent;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: background .6s;
+  cursor: default;
+}
+.stat-cell:hover { background: #000000; }
+
+/* Gold top-bar on hover */
+.stat-cell::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--grad);
+  opacity: 0;
+  transition: opacity .2s;
+  z-index: 2;
+}
+.stat-cell:hover::before { opacity: 1; }
+
+
+
+/* ── Video cell — spans rows 2 & 3 in column 2 (desktop only) ── */
+.stat-img-cell {
+  grid-column: 2;
+  grid-row: 2 / 4;
+  background: var(--s2);
+  position: relative;
+  overflow: hidden;
+  min-height: 280px;
+}
+.stat-img-cell video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ── Number ── */
+.stat-cell > * { position: relative; z-index: 1; }
+
+.stv {
+  font-family: 'Tourney', sans-serif;
+  font-weight: 600;
+  font-size: clamp(48px, 6.6vw, 96px);
+  text-transform: uppercase;
+  letter-spacing: -.01em;
+  line-height: 1;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+}
+
+/* Counter animation */
+[data-counter] { display: inline-block; transition: opacity .12s ease; }
+[data-counter].counting { opacity: .85; }
+
+@keyframes statPop {
+  0%   { transform: translateY(6px); opacity: 0 }
+  60%  { transform: translateY(-2px); opacity: 1 }
+  100% { transform: translateY(0); opacity: 1 }
+}
+.stat-cell.animated [data-counter] {
+  animation: statPop .5s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* ── Label + sub-label ── */
+.stl {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.std {
+  font-size: 15px;
+  font-style: italic;
+  color: var(--tx2);
+}
+
+/* ── Mobile: single column ── */
+@media (max-width: 600px) {
+  .stat-band {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  /* Reset the video cell's desktop row/column spans */
+  .stat-img-cell {
+    grid-column: 1;
+    grid-row: auto;
+    min-height: 220px;
+  }
+
+  .stat-cell {
+    padding: 40px 24px;
+  }
+
+  .stv {
+    font-size: clamp(52px, 14vw, 80px);
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="stat-band" id="statBand">
+
+  <!-- Row 1 -->
+  <div class="stat-cell" data-prefix="$" data-value="300" data-suffix="M+">
+    <div class="stv" data-counter>$300M+</div>
+    <div class="stl">MMR Partnership Revenue incl. NIL Assets</div>
+    <div class="std">24-25: $140M+</div>
+  </div>
+
+  <div class="stat-cell" data-prefix="" data-value="1750" data-suffix="+" data-nokformat="true">
+    <div class="stv" data-counter>1,750+</div>
+    <div class="stl">Total Sponsorship Deals with NIL</div>
+    <div class="std">24-25: 900+</div>
+  </div>
+
+  <!-- Row 2: stat left, video spans rows 2–3 on right (desktop) -->
+  <div class="stat-cell" data-prefix="" data-value="1300" data-suffix="+" data-nokformat="true">
+    <div class="stv" data-counter>1,300+</div>
+    <div class="stl">Unique Brands Engaged in NIL</div>
+    <div class="std">24-25: 700+</div>
+  </div>
+
+  <div class="stat-img-cell">
+    <video autoplay muted loop playsinline>
+      <source src="https://video.wixstatic.com/video/cf1fe3_02bcad6e56dd40059e93f67dfcbeacc9/480p/mp4/file.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- Row 3: stat bottom-left (video continues on right) -->
+  <div class="stat-cell" data-prefix="" data-value="5000" data-suffix="+" data-nokformat="true">
+    <div class="stv" data-counter>5,000+</div>
+    <div class="stl">Participating Student-Athletes</div>
+    <div class="std">24-25: 3,000+</div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+  function formatK(val, target) {
+    const finalK = (target / 1000) % 1 === 0
+      ? (target / 1000) + 'K'
+      : (target / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    if (val >= target) return finalK;
+    if (val >= 1000) {
+      const k = val / 1000;
+      return (k % 1 === 0 ? k : k.toFixed(1).replace(/\.0$/, '')) + 'K';
+    }
+    return val.toString();
+  }
+
+  function animateCounter(cell, delay) {
+    const el       = cell.querySelector('[data-counter]');
+    const target   = parseFloat(cell.dataset.value);
+    const prefix   = cell.dataset.prefix  || '';
+    const suffix   = cell.dataset.suffix  || '';
+    const useK     = target >= 1000 && !cell.dataset.nokformat;
+    const duration = 1400;
+    let start      = null;
+
+    const finalText = prefix + (useK
+      ? ((target / 1000) % 1 === 0
+          ? (target / 1000) + 'K'
+          : (target / 1000).toFixed(1).replace(/\.0$/, '') + 'K')
+      : Math.round(target).toLocaleString('en-US')
+    ) + suffix;
+
+    setTimeout(() => {
+      cell.classList.add('animated');
+      el.classList.add('counting');
+
+      function step(ts) {
+        if (!start) start = ts;
+        const progress = Math.min((ts - start) / duration, 1);
+        const eased    = easeOutExpo(progress);
+        let display;
+        if (useK) {
+          display = formatK(Math.round(eased * target), target);
+        } else {
+          display = Math.round(eased * target).toLocaleString('en-US');
+        }
+        el.textContent = prefix + display + suffix;
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          el.textContent = finalText;
+          el.classList.remove('counting');
+        }
+      }
+      requestAnimationFrame(step);
+    }, delay);
+  }
+
+  const band = document.getElementById('statBand');
+  if (!band) return;
+
+  let fired = false;
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !fired) {
+        fired = true;
+        obs.disconnect();
+        band.querySelectorAll('.stat-cell[data-value]').forEach((cell, i) => {
+          animateCounter(cell, i * 120);
+        });
+      }
+    });
+  }, { threshold: 0.25 });
+
+  obs.observe(band);
+})();
+</script>
+</body>
+</html>
