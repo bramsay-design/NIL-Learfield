@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NIL Story</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&family=Tourney:wght@600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --gold: #C9A84C;
+    --midnight: #000;
+    --white: #fff;
+    --tx1: rgba(255,255,255,.92);
+    --tx2: rgba(255,255,255,.45);
+    --tx3: rgba(255,255,255,.28);
+    --rule: rgba(165,131,56,.25);
+  }
+
+  /* Lock everything to viewport — no scroll ever */
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--midnight);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 300;
+    color: var(--tx1);
+  }
+
+  /* Outer shell fills viewport, stacks wrap + back link */
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    gap: 10px;
+  }
+
+  /* Card fills available width, height driven by content */
+  .wrap {
+    width: 100%;
+    max-width: 780px;
+    background: #0d0d0d;
+    border: .5px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    /* Flex column so video shrinks and info stays fixed */
+    display: flex;
+    flex-direction: column;
+    /* Never taller than viewport minus body padding and back-link */
+    max-height: calc(100vh - 70px);
+  }
+
+  /* Close button */
+  .close-bar {
+    position: absolute;
+    top: 10px; right: 10px;
+    z-index: 10;
+  }
+  .close-bar button {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(0,0,0,.6);
+    border: 1.5px solid rgba(255,255,255,.25);
+    color: rgba(255,255,255,.85);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+  }
+  .close-bar button:hover { background: rgba(0,0,0,.9); }
+
+  /* Video area: flex-shrink so it gives up height before info panel does */
+  .vid-wrap {
+    width: 100%;
+    background: #000;
+    flex-shrink: 1;
+    min-height: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .vid-wrap video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: #000;
+  }
+  /* Custom controls bar */
+  .ctrl {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,.75));
+    padding: 24px 14px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity .25s;
+  }
+  .vid-wrap:hover .ctrl, .vid-wrap.show-ctrl .ctrl { opacity: 1; }
+  .ctrl-btn {
+    background: none; border: none; cursor: pointer;
+    color: #fff; padding: 4px; display: flex; align-items: center;
+    flex-shrink: 0;
+  }
+  .ctrl-btn svg { width: 20px; height: 20px; fill: #fff; }
+  .progress {
+    flex: 1; height: 4px;
+    background: rgba(255,255,255,.25);
+    border-radius: 2px; cursor: pointer; position: relative;
+  }
+  .progress-bar {
+    height: 100%; width: 0%; background: var(--gold);
+    border-radius: 2px; pointer-events: none;
+  }
+  .time {
+    font-size: 11px; color: rgba(255,255,255,.7);
+    letter-spacing: .04em; white-space: nowrap; flex-shrink: 0;
+  }
+  .ctrl-btn-fs svg { width: 18px; height: 18px; }
+  .no-video {
+    width: 100%; height: 160px;
+    background: #111;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--tx3);
+    font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  }
+
+  /* Info panel: fixed height, never shrinks */
+  .info {
+    padding: 16px 22px 18px;
+    flex-shrink: 0;
+    border-top: .5px solid var(--rule);
+  }
+  .badge {
+    display: inline-block;
+    font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--white);
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.15);
+    padding: 3px 8px; border-radius: 2px;
+    margin-bottom: 8px;
+  }
+  .name {
+    font-family: 'Tourney', sans-serif;
+    font-weight: 600; font-size: 20px;
+    color: var(--gold);
+    margin-bottom: 2px;
+    line-height: 1.1; text-transform: uppercase; letter-spacing: .04em;
+  }
+  .school {
+    font-size: 12px; color: var(--tx2);
+    margin-bottom: 10px; letter-spacing: .03em;
+  }
+  .quote {
+    font-size: 13px; line-height: 1.55;
+    color: var(--tx1); font-style: italic;
+    margin-bottom: 8px;
+    /* Clamp long quotes to 2 lines */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .brand {
+    font-size: 11px; color: var(--gold);
+    letter-spacing: .06em; opacity: .85;
+  }
+
+  /* Back link below the card */
+  .back button {
+    background: none; border: none;
+    color: var(--tx2); cursor: pointer;
+    font-size: 11px; letter-spacing: .06em;
+    text-decoration: underline;
+    font-family: inherit;
+    flex-shrink: 0;
+  }
+  .back button:hover { color: var(--white); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="close-bar">
+    <button onclick="window.close()" title="Close">×</button>
+  </div>
+  <div class="vid-wrap" id="vidWrap"></div>
+  <div class="info">
+    <div class="badge" id="badge"></div>
+    <div class="name" id="name"></div>
+    <div class="school" id="school"></div>
+    <div class="quote" id="quote"></div>
+    <div class="brand" id="brand"></div>
+  </div>
+</div>
+<div class="back">
+  <button onclick="window.close()">← Back to NIL Impact Report</button>
+</div>
+
+<script>
+  const p = new URLSearchParams(window.location.search);
+  const video  = p.get('v')  || '';
+  const athlete= p.get('a')  || '';
+  const sport  = p.get('sl') || '';
+  const school = p.get('sc') || '';
+  const brand  = p.get('b')  || '';
+  const quote  = p.get('q')  || '';
+
+  document.title = athlete || 'NIL Story';
+  document.getElementById('badge').textContent  = sport;
+  document.getElementById('name').textContent   = athlete;
+  document.getElementById('school').textContent = school;
+  document.getElementById('brand').textContent  = brand ? '× ' + brand : '';
+  document.getElementById('quote').textContent  = quote ? '\u201c' + quote + '\u201d' : '';
+
+  const vidWrap = document.getElementById('vidWrap');
+  if (video) {
+    // No native controls — custom controls prevent download option
+    const vid = document.createElement('video');
+    vid.src = video;
+    vid.autoplay = true;
+    vid.setAttribute('playsinline', '');
+    vid.addEventListener('canplay', () => {
+      const p = vid.play();
+      if (p && p.catch) {
+        p.catch(() => {
+          // Autoplay blocked by browser — mute and retry
+          vid.muted = true;
+          vid.play().catch(() => {});
+        });
+      }
+    }, { once: true });
+    vid.setAttribute('controlsList', 'nodownload nofullscreen noremoteplayback');
+    vid.setAttribute('disablePictureInPicture', '');
+    // Block right-click context menu on video
+    vid.addEventListener('contextmenu', e => e.preventDefault());
+
+    // Custom controls HTML
+    const ctrl = document.createElement('div');
+    ctrl.className = 'ctrl';
+    ctrl.innerHTML = `
+      <button class="ctrl-btn" id="playBtn" title="Play/Pause">
+        <svg viewBox="0 0 24 24"><path d="M6 19h4V5H6zm8-14v14h4V5z"/></svg>
+      </button>
+      <div class="progress" id="prog">
+        <div class="progress-bar" id="progBar"></div>
+      </div>
+      <span class="time" id="timeEl">0:00 / 0:00</span>
+      <button class="ctrl-btn ctrl-btn-fs" id="fsBtn" title="Fullscreen">
+        <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7zm-2-4h2V7h3V5H5zm12 9h-3v2h5v-5h-2zM14 5v2h3v3h2V5z"/></svg>
+      </button>`;
+
+    vidWrap.appendChild(vid);
+    vidWrap.appendChild(ctrl);
+
+    // Show controls on touch devices
+    vidWrap.addEventListener('touchstart', () => {
+      vidWrap.classList.add('show-ctrl');
+      clearTimeout(vidWrap._ct);
+      vidWrap._ct = setTimeout(() => vidWrap.classList.remove('show-ctrl'), 3000);
+    });
+
+    const playBtn = document.getElementById('playBtn');
+    const progBar = document.getElementById('progBar');
+    const timeEl  = document.getElementById('timeEl');
+    const fsBtn   = document.getElementById('fsBtn');
+    const prog    = document.getElementById('prog');
+
+    function fmt(s) {
+      s = Math.floor(s || 0);
+      return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+    }
+
+    // Play/pause toggle — click video or button
+    function togglePlay() {
+      vid.paused ? vid.play() : vid.pause();
+    }
+    vid.addEventListener('click', togglePlay);
+    playBtn.addEventListener('click', togglePlay);
+
+    // Update play/pause icon
+    const playIcon  = '<path d="M8 5v14l11-7z"/>';
+    const pauseIcon = '<path d="M6 19h4V5H6zm8-14v14h4V5z"/>';
+    vid.addEventListener('play',  () => playBtn.querySelector('svg').innerHTML = pauseIcon);
+    vid.addEventListener('pause', () => playBtn.querySelector('svg').innerHTML = playIcon);
+
+    // Progress bar
+    vid.addEventListener('timeupdate', () => {
+      if (!vid.duration) return;
+      progBar.style.width = (vid.currentTime / vid.duration * 100) + '%';
+      timeEl.textContent = fmt(vid.currentTime) + ' / ' + fmt(vid.duration);
+    });
+
+    // Seek
+    prog.addEventListener('click', e => {
+      const r = prog.getBoundingClientRect();
+      vid.currentTime = ((e.clientX - r.left) / r.width) * vid.duration;
+    });
+
+    // Fullscreen
+    fsBtn.addEventListener('click', () => {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        (vidWrap.requestFullscreen || vidWrap.webkitRequestFullscreen).call(vidWrap);
+      }
+    });
+
+  } else {
+    const empty = document.createElement('div');
+    empty.className = 'no-video';
+    empty.textContent = 'No video available';
+    vidWrap.appendChild(empty);
+  }
+</script>
+</body>
+</html>
