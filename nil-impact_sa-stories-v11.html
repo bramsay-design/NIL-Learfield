@@ -1,4 +1,29 @@
 <!DOCTYPE html>
+<!--
+=============================================================
+  WIX PARENT PAGE SNIPPET
+  Add via: Wix Editor > Pages > (your page) > Settings >
+           Advanced > Custom Code > Body - end
+  Paste ONLY the JS between the <script> tags.
+=============================================================
+ 
+  <script>
+  window.addEventListener('message', function(e) {
+    if (!e.data || typeof e.data !== 'object') return;
+    if (e.data.type !== 'scrollToIframeTop') return;
+    // Find the NIL iframe — try specific src first, fall back to first iframe
+    var iframe = document.querySelector('iframe[src*="nil.learfield"]')
+                 || document.querySelector('iframe[src*="github.io"]')
+                 || document.querySelector('iframe');
+    if (!iframe) return;
+    var rect = iframe.getBoundingClientRect();
+    var absoluteTop = rect.top + window.pageYOffset;
+    // Instantly jump (not smooth) so overlay opens at correct position
+    window.scrollTo(0, absoluteTop);
+  });
+  </script>
+=============================================================
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
