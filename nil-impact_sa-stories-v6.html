@@ -480,7 +480,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 
     <div class="sc" data-sport="hk" data-athlete="McKayla Zilisch" data-sl="Women&#x27;s Hockey" data-brand="Abbott (formerly Exact Sciences)" data-bg="bg4" data-quote="The main message is to take care of your health to help prevent cancer.  And so because of that, I think this is a really cool opportunity to use my platform and pass along a message that has impacted myself, but I know also impacts a lot of other people. - McKayla Zilisch" data-season="fall" onclick="openLB(this)">
       <div class="sc-thumb">
-        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_aa6c9a97445046e8936ef3e2f097e9d2/1080p/mp4/file.mp4" playsinline preload="metadata"></video>
+        <video class="sc-video" src="https://video.wixstatic.com/video/cf1fe3_ccccaa97d6cc4d488e195fdba71e608e/720p/mp4/file.mp4" playsinline preload="metadata"></video>
         <div class="sc-thumb-bg bg4"></div><div class="sc-ovl"></div>
         <div class="sc-badge b-hk">Women's Hockey</div>
         <div class="sc-play sc-play-video"><div class="scp-ring"><div class="scp-tri"></div></div></div>
@@ -1215,6 +1215,9 @@ function switchCategory(btn, cat) {
   });
   const target = document.getElementById(map[cat]);
   if (target) target.style.display = 'grid';
+  // Notify Wix parent of new height after grid paints
+  setTimeout(sendHeight, 50);
+  setTimeout(sendHeight, 300);
 }
 
 // ── Lightbox bg map ──
@@ -1308,17 +1311,23 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLBBtn()
 	
 	<script>
   function sendHeight() {
-    const height = document.body.scrollHeight;
+    const height = Math.max(
+      document.body.scrollHeight,
+      document.body.offsetHeight,
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+    );
     window.parent.postMessage({ height: height }, '*');
+    // Also send in iframeResizer format for Wix compatibility
+    window.parent.postMessage('[iFrameSizer]' + height, '*');
   }
 
-  // Send height on load and whenever content changes
-  window.addEventListener('load', sendHeight);
+  window.addEventListener('load', () => { sendHeight(); setTimeout(sendHeight, 500); });
   window.addEventListener('resize', sendHeight);
 
-  // Also watch for any dynamic content changes
-  const observer = new MutationObserver(sendHeight);
-  observer.observe(document.body, { childList: true, subtree: true });
+  // Watch for display/style changes (tab switches, lightbox open/close)
+  const observer = new MutationObserver(() => setTimeout(sendHeight, 50));
+  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
 </script>
 </body>
 </html>
