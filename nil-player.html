@@ -79,19 +79,52 @@
     background: #000;
     flex-shrink: 1;
     min-height: 0;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
   }
   .vid-wrap video {
-    /* Fill width for landscape; height-constrained for portrait */
     width: 100%;
     height: 100%;
     object-fit: contain;
     display: block;
     background: #000;
   }
+  /* Custom controls bar */
+  .ctrl {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,.75));
+    padding: 24px 14px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity .25s;
+  }
+  .vid-wrap:hover .ctrl, .vid-wrap.show-ctrl .ctrl { opacity: 1; }
+  .ctrl-btn {
+    background: none; border: none; cursor: pointer;
+    color: #fff; padding: 4px; display: flex; align-items: center;
+    flex-shrink: 0;
+  }
+  .ctrl-btn svg { width: 20px; height: 20px; fill: #fff; }
+  .progress {
+    flex: 1; height: 4px;
+    background: rgba(255,255,255,.25);
+    border-radius: 2px; cursor: pointer; position: relative;
+  }
+  .progress-bar {
+    height: 100%; width: 0%; background: var(--gold);
+    border-radius: 2px; pointer-events: none;
+  }
+  .time {
+    font-size: 11px; color: rgba(255,255,255,.7);
+    letter-spacing: .04em; white-space: nowrap; flex-shrink: 0;
+  }
+  .ctrl-btn-fs svg { width: 18px; height: 18px; }
   .no-video {
     width: 100%; height: 160px;
     background: #111;
@@ -189,12 +222,87 @@
 
   const vidWrap = document.getElementById('vidWrap');
   if (video) {
+    // No native controls — custom controls prevent download option
     const vid = document.createElement('video');
     vid.src = video;
-    vid.controls = true;
     vid.autoplay = true;
     vid.setAttribute('playsinline', '');
+    vid.setAttribute('controlsList', 'nodownload nofullscreen noremoteplayback');
+    vid.setAttribute('disablePictureInPicture', '');
+    // Block right-click context menu on video
+    vid.addEventListener('contextmenu', e => e.preventDefault());
+
+    // Custom controls HTML
+    const ctrl = document.createElement('div');
+    ctrl.className = 'ctrl';
+    ctrl.innerHTML = `
+      <button class="ctrl-btn" id="playBtn" title="Play/Pause">
+        <svg viewBox="0 0 24 24"><path d="M6 19h4V5H6zm8-14v14h4V5z"/></svg>
+      </button>
+      <div class="progress" id="prog">
+        <div class="progress-bar" id="progBar"></div>
+      </div>
+      <span class="time" id="timeEl">0:00 / 0:00</span>
+      <button class="ctrl-btn ctrl-btn-fs" id="fsBtn" title="Fullscreen">
+        <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7zm-2-4h2V7h3V5H5zm12 9h-3v2h5v-5h-2zM14 5v2h3v3h2V5z"/></svg>
+      </button>`;
+
     vidWrap.appendChild(vid);
+    vidWrap.appendChild(ctrl);
+
+    // Show controls on touch devices
+    vidWrap.addEventListener('touchstart', () => {
+      vidWrap.classList.add('show-ctrl');
+      clearTimeout(vidWrap._ct);
+      vidWrap._ct = setTimeout(() => vidWrap.classList.remove('show-ctrl'), 3000);
+    });
+
+    const playBtn = document.getElementById('playBtn');
+    const progBar = document.getElementById('progBar');
+    const timeEl  = document.getElementById('timeEl');
+    const fsBtn   = document.getElementById('fsBtn');
+    const prog    = document.getElementById('prog');
+
+    function fmt(s) {
+      s = Math.floor(s || 0);
+      return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+    }
+
+    // Play/pause toggle — click video or button
+    function togglePlay() {
+      vid.paused ? vid.play() : vid.pause();
+    }
+    vid.addEventListener('click', togglePlay);
+    playBtn.addEventListener('click', togglePlay);
+
+    // Update play/pause icon
+    const playIcon  = '<path d="M8 5v14l11-7z"/>';
+    const pauseIcon = '<path d="M6 19h4V5H6zm8-14v14h4V5z"/>';
+    vid.addEventListener('play',  () => playBtn.querySelector('svg').innerHTML = pauseIcon);
+    vid.addEventListener('pause', () => playBtn.querySelector('svg').innerHTML = playIcon);
+
+    // Progress bar
+    vid.addEventListener('timeupdate', () => {
+      if (!vid.duration) return;
+      progBar.style.width = (vid.currentTime / vid.duration * 100) + '%';
+      timeEl.textContent = fmt(vid.currentTime) + ' / ' + fmt(vid.duration);
+    });
+
+    // Seek
+    prog.addEventListener('click', e => {
+      const r = prog.getBoundingClientRect();
+      vid.currentTime = ((e.clientX - r.left) / r.width) * vid.duration;
+    });
+
+    // Fullscreen
+    fsBtn.addEventListener('click', () => {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        (vidWrap.requestFullscreen || vidWrap.webkitRequestFullscreen).call(vidWrap);
+      }
+    });
+
   } else {
     const empty = document.createElement('div');
     empty.className = 'no-video';
