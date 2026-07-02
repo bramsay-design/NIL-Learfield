@@ -234,15 +234,10 @@
     // Set src last so all attributes are in place before load begins
     vid.src = video;
 
-    // Play as soon as metadata is ready; mute and retry if browser blocks
+    // Play as soon as metadata is ready
+    // No muted fallback — opening a new tab is a user gesture so audio is allowed
     vid.addEventListener('loadedmetadata', () => {
-      const promise = vid.play();
-      if (promise && promise.catch) {
-        promise.catch(() => {
-          vid.muted = true;
-          vid.play().catch(() => {});
-        });
-      }
+      vid.play().catch(() => {});
     }, { once: true });
 
     // Custom controls HTML
