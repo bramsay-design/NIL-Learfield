@@ -224,23 +224,26 @@
   if (video) {
     // No native controls — custom controls prevent download option
     const vid = document.createElement('video');
-    vid.src = video;
-    vid.autoplay = true;
+    vid.setAttribute('autoplay', '');
     vid.setAttribute('playsinline', '');
-    vid.addEventListener('canplay', () => {
-      const p = vid.play();
-      if (p && p.catch) {
-        p.catch(() => {
-          // Autoplay blocked by browser — mute and retry
+    vid.setAttribute('controlsList', 'nodownload nofullscreen noremoteplayback');
+    vid.setAttribute('disablePictureInPicture', '');
+    // Block right-click context menu on video
+    vid.addEventListener('contextmenu', e => e.preventDefault());
+
+    // Set src last so all attributes are in place before load begins
+    vid.src = video;
+
+    // Play as soon as metadata is ready; mute and retry if browser blocks
+    vid.addEventListener('loadedmetadata', () => {
+      const promise = vid.play();
+      if (promise && promise.catch) {
+        promise.catch(() => {
           vid.muted = true;
           vid.play().catch(() => {});
         });
       }
     }, { once: true });
-    vid.setAttribute('controlsList', 'nodownload nofullscreen noremoteplayback');
-    vid.setAttribute('disablePictureInPicture', '');
-    // Block right-click context menu on video
-    vid.addEventListener('contextmenu', e => e.preventDefault());
 
     // Custom controls HTML
     const ctrl = document.createElement('div');
