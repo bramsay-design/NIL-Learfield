@@ -384,36 +384,17 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 #lbClose:hover { background: rgba(0,0,0,.82); color: var(--white); }
 #lbVid {
   width: 100%;
+  aspect-ratio: 16/9;
   position: relative;
-  overflow: hidden;
   background: #000;
-  flex-shrink: 1;
-  min-height: 0;
+  flex-shrink: 0;
 }
-#lbVid video {
-  max-height: calc(100vh - 48px - 160px);
-}
-#lbVidBg  { position: absolute; inset: 0; }
-#lbVideo  { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-#lbPring  {
-  position: absolute; inset: 0; z-index: 3;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-}
-.lb-play-ring {
-  width: 56px; height: 56px; border-radius: 50%;
-  border: 2px solid rgba(208,183,135,.6);
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(208,183,135,.1);
-  transition: transform .2s;
-}
-.lb-play-ring:hover { transform: scale(1.1); }
-.lb-play-tri {
-  width: 0; height: 0;
-  border-top: 9px solid transparent;
-  border-bottom: 9px solid transparent;
-  border-left: 16px solid var(--gold);
-  margin-left: 4px;
+#lbVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  background: #000;
 }
 #lbInfo { padding: 20px 24px 24px; flex-shrink: 0; overflow-y: auto; }
 #lbVBadge {
@@ -752,11 +733,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   <div id="lbBox">
     <button id="lbClose" onclick="closeLBBtn()">&times;</button>
     <div id="lbVid">
-      <div id="lbVidBg"></div>
-      <video id="lbVideo" controls playsinline style="display:none;"></video>
-      <div id="lbPring" onclick="togglePlay()">
-        <div class="lb-play-ring"><div class="lb-play-tri"></div></div>
-      </div>
+      <video id="lbVideo" controls playsinline></video>
     </div>
     <div id="lbInfo">
       <div id="lbVBadge"></div>
@@ -771,43 +748,34 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 <script>
 
 
-// ── Lightbox bg map ──
-const bgM = {
-  bg1: 'linear-gradient(135deg,#1a0e04 0%,#0f0903 100%)',
-  bg2: 'linear-gradient(135deg,#041410 0%,#030e0b 100%)',
-  bg3: 'linear-gradient(135deg,#080c1c 0%,#04060f 100%)',
-  bg4: 'linear-gradient(135deg,#180a03 0%,#100604 100%)',
-  bg5: 'linear-gradient(135deg,#0c041a 0%,#070312 100%)',
-  bg6: 'linear-gradient(135deg,#031016 0%,#020b0f 100%)',
-};
-
-// ── Player base URL — update this to your GitHub Pages URL after upload ──
-const PLAYER_URL = 'https://bramsay-design.github.io/NIL-Learfield/nil-player_4.html';
-
+// ── Open story video in-page (native controls: speed, AirPlay/Share,
+//    Picture-in-Picture, fullscreen, ±10s skip, volume, close) ──
 function openLB(card) {
-  const d = card.dataset;
+  const d         = card.dataset;
   const cardVideo = card.querySelector('video');
   const schoolEl  = card.querySelector('.sc-school');
+  const badgeEl   = card.querySelector('.sc-badge');
+
+  const lbVideo  = document.getElementById('lbVideo');
+  const lbVBadge = document.getElementById('lbVBadge');
+  const lbAName  = document.getElementById('lbAName');
+  const lbAMeta  = document.getElementById('lbAMeta');
+  const lbQuote  = document.getElementById('lbQuote');
+  const lbBrand  = document.getElementById('lbBrand');
+  const overlay  = document.getElementById('lbOverlay');
 
   const videoSrc = cardVideo && cardVideo.src ? cardVideo.src : '';
-  const params = new URLSearchParams({
-    v:  videoSrc,
-    a:  d.athlete || '',
-    sl: d.sl      || '',
-    sc: schoolEl  ? schoolEl.textContent : '',
-    b:  d.brand   || '',
-    q:  d.quote   || ''
-  });
+  if (videoSrc) lbVideo.src = videoSrc;
 
-  window.open(PLAYER_URL + '?' + params.toString(), '_blank');
-}
+  lbVBadge.textContent = d.sl || (badgeEl ? badgeEl.textContent : '');
+  lbAName.textContent  = d.athlete || '';
+  lbAMeta.textContent  = schoolEl ? schoolEl.textContent : '';
+  lbQuote.textContent  = d.quote || '';
+  lbBrand.textContent  = d.brand ? ('× ' + d.brand) : '';
 
-
-function togglePlay() {
-  const v = document.getElementById('lbVideo');
-  if (!v.src) return;
-  if (v.paused) { v.play(); document.getElementById('lbPring').style.display = 'none'; }
-  else { v.pause(); document.getElementById('lbPring').style.display = 'flex'; }
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  lbVideo.play().catch(function(){});
 }
 
 function closeLBBtn() {
@@ -871,23 +839,6 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
   initStoryDots();
 }
 
-// ── Viewport-aware overlay positioning for Wix iframe embedding ──
-function positionAndOpenOverlay() {
-  const ov = document.getElementById('lbOverlay');
-  // Step 1: scroll this iframe's own document to top
-  window.scrollTo(0, 0);
-  document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
-  // Step 2: tell parent page to scroll so iframe top is at viewport top
-  try {
-    window.parent.postMessage({ type: 'scrollToIframeTop' }, '*');
-  } catch(e) {}
-  // Step 3: open overlay after scrolls complete
-  setTimeout(function() {
-    ov.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }, 200);
-}
 </script>
 	
 	<script>
